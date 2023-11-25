@@ -1464,3 +1464,95 @@ AttributeError: 'str' object has no attribute 'items'
 21:17:37 DEBUG Sending data to websocket: {"op": 1, "d": 2}
 21:17:37 DEBUG Shard ID 0 | ❤ Gateway is sending a Heartbeat
 21:17:37 DEBUG Shard ID 0 | ❤ Received heartbeat acknowledgement from gateway
+21:22:27 DEBUG Running client sanity checks...
+21:22:27 DEBUG Added callback: Reload.reload
+21:22:27 DEBUG Loaded Extension: ext.reload
+21:22:27 DEBUG Loaded Extension: ext.listen
+21:22:27 DEBUG Using selector: EpollSelector
+21:22:27 DEBUG 0 callbacks have been loaded from __main__.
+21:22:27 DEBUG Added callback: _disconnect
+21:22:27 DEBUG Added callback: _on_websocket_ready
+21:22:27 DEBUG Added callback: on_autocomplete_completion
+21:22:27 DEBUG Added callback: on_autocomplete_error
+21:22:27 DEBUG Added callback: on_command_completion
+21:22:27 DEBUG Added callback: on_command_error
+21:22:27 DEBUG Added callback: on_component_completion
+21:22:27 DEBUG Added callback: on_component_error
+21:22:27 DEBUG Added callback: on_error
+21:22:27 DEBUG Added callback: on_modal_completion
+21:22:27 DEBUG Added callback: on_modal_error
+21:22:27 DEBUG Added callback: on_resume
+21:22:27 DEBUG 12 callbacks have been loaded from Client.
+21:22:27 DEBUG Attempting to login
+21:22:29 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:29 DEBUG GET /users/@me Received 200 :: [49/50 calls remaining]
+21:22:30 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:30 DEBUG GET /oauth2/applications/@me Received 200 :: [49/50 calls remaining]
+21:22:30 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:30 DEBUG GET /gateway Received 200 :: [49/50 calls remaining]
+21:22:30 INFO Shard ID 0 | Starting Shard
+21:22:30 INFO Shard ID 0 | Shard is attempting to connect to gateway...
+21:22:30 DEBUG Shard ID 0 | Identification payload sent to gateway, requesting intents: 3276799
+21:22:30 INFO Shard ID 0 | Gateway connection established
+21:22:30 DEBUG Shard ID 0 | Session ID: d6bd5cb35753cd5596fe570d72b9f1fc Trace: ['["gateway-prd-us-east1-b-d7x1",{"micros":100209,"calls":["id_created",{"micros":770,"calls":[]},"session_lookup_time",{"micros":2863,"calls":[]},"session_lookup_finished",{"micros":21,"calls":[]},"discord-sessions-prd-2-55",{"micros":95746,"calls":["start_session",{"micros":43828,"calls":["discord-api-5b464978d4-skkjr",{"micros":36973,"calls":["get_user",{"micros":5793},"get_guilds",{"micros":3417},"send_scheduled_deletion_message",{"micros":10},"guild_join_requests",{"micros":2},"authorized_ip_coro",{"micros":9}]}]},"starting_guild_connect",{"micros":71,"calls":[]},"presence_started",{"micros":4312,"calls":[]},"guilds_started",{"micros":86,"calls":[]},"guilds_connect",{"micros":1,"calls":[]},"presence_connect",{"micros":47398,"calls":[]},"connect_finished",{"micros":47403,"calls":[]},"build_ready",{"micros":43,"calls":[]},"clean_ready",{"micros":1,"calls":[]},"optimize_ready",{"micros":0,"calls":[]},"split_ready",{"micros":1,"calls":[]}]}]}]']
+21:22:30 DEBUG Dispatching Event: websocket_ready
+21:22:31 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:31 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:31 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:31 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:31 INFO Overwriting 0 with 1 application commands
+21:22:31 DEBUG Caching ingested rate limit data for: a3b974ef6eb1c925dd4ceb42f4db26fd
+21:22:31 DEBUG PUT /applications/{app_id}/commands Received 200 :: [1/2 calls remaining]
+21:22:31 DEBUG Sync of 1 scopes took 1.0413542300002518 seconds
+21:22:31 DEBUG Dispatching Event: startup
+21:22:31 DEBUG Sending data to websocket: {"op": 3, "d": {"since": 1700943751846, "activities": [{"name": "You \ud83d\udc40", "type": 3}], "status": "online", "afk": false}}
+21:22:31 INFO bot_sans_nom est prêt !
+21:22:32 DEBUG Sending heartbeat every 41.25 seconds
+21:22:32 DEBUG Sending data to websocket: {"op": 1, "d": 2}
+21:22:32 DEBUG Shard ID 0 | ❤ Gateway is sending a Heartbeat
+21:22:32 DEBUG Shard ID 0 | ❤ Received heartbeat acknowledgement from gateway
+21:22:50 DEBUG 1178068225771176107::reload should be called
+21:22:50 DEBUG Reload has been drop
+21:22:50 DEBUG Added callback: Reload.reload
+21:22:50 DEBUG Loaded Extension: ext.reload
+21:22:50 DEBUG Listen has been drop
+21:22:50 DEBUG Loaded Extension: ext.listen
+21:22:50 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:50 DEBUG GET /applications/{application_id}/commands Received 200 :: [48/50 calls remaining]
+21:22:50 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:50 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:50 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:50 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:51 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:51 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:51 DEBUG 0 is already up-to-date with 1 commands.
+21:22:51 DEBUG Sync of 1 scopes took 0.7194893830001092 seconds
+21:22:51 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:51 DEBUG GET /applications/{application_id}/commands Received 200 :: [48/50 calls remaining]
+21:22:51 DEBUG 0 is already up-to-date with 1 commands.
+21:22:51 DEBUG Sync of 1 scopes took 0.7778943759994945 seconds
+21:22:51 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:51 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:51 DEBUG 0 is already up-to-date with 1 commands.
+21:22:51 DEBUG Sync of 1 scopes took 0.817316480000045 seconds
+21:22:51 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:51 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:51 DEBUG Caching ingested rate limit data for: f7ead6a7674e5a323d93786263b66cb1
+21:22:51 DEBUG GET /applications/{application_id}/commands Received 200 :: [49/50 calls remaining]
+21:22:51 DEBUG 0 is already up-to-date with 1 commands.
+21:22:51 DEBUG Sync of 1 scopes took 1.244276555000397 seconds
+21:22:52 DEBUG Caching ingested rate limit data for: 432f6223265d156004ac81366c5a948f
+21:22:52 DEBUG POST /interactions/{interaction_id}/aW50ZXJhY3Rpb246MTE3ODA2ODMwNDU1Mjc5MjA5NDo1SU9iTXNyNUtEMkN4WDJMWDJpUnJDT1ViM2FyMDJYSWt2TUU4aWpGVWxJaW5QVzgyM3VydVFNT3ZrOGtGME9MWHd6NWJSSEZsQ0pLMzRaNnlCaFpBSDFJVFR3VnZTWU5zNWh2QzNqSDlMRVkyZkhGeGRKaUxVNGxHTW1QdmhFTQ/callback Received 204 :: [4/5 calls remaining]
+21:22:52 DEBUG Caching ingested rate limit data for: 3d2712a9e4fe17cc9d3fed4a8e672e5f
+21:22:52 DEBUG GET /webhooks/{application_id}/aW50ZXJhY3Rpb246MTE3ODA2ODMwNDU1Mjc5MjA5NDo1SU9iTXNyNUtEMkN4WDJMWDJpUnJDT1ViM2FyMDJYSWt2TUU4aWpGVWxJaW5QVzgyM3VydVFNT3ZrOGtGME9MWHd6NWJSSEZsQ0pLMzRaNnlCaFpBSDFJVFR3VnZTWU5zNWh2QzNqSDlMRVkyZkhGeGRKaUxVNGxHTW1QdmhFTQ/messages/{message_id} Received 200 :: [4/5 calls remaining]
+21:22:52 DEBUG Dispatching Event: command_completion
+21:22:52 INFO Command Called: reload with event.ctx.args = [] | event.ctx.kwargs = {}
+21:23:13 DEBUG Sending data to websocket: {"op": 1, "d": 4}
+21:23:13 DEBUG Shard ID 0 | ❤ Gateway is sending a Heartbeat
+21:23:14 DEBUG Shard ID 0 | ❤ Received heartbeat acknowledgement from gateway
+21:23:55 DEBUG Sending data to websocket: {"op": 1, "d": 4}
+21:23:55 DEBUG Shard ID 0 | ❤ Gateway is sending a Heartbeat
+21:23:55 DEBUG Shard ID 0 | ❤ Received heartbeat acknowledgement from gateway
+21:23:59 DEBUG Dispatching Event: disconnect
+21:24:00 DEBUG Stopping the bot.
+21:24:00 INFO Shard ID 0 | Stopping Shard
