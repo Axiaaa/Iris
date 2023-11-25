@@ -14,7 +14,7 @@ class Info(Extension):
                 None
             """
             try : 
-                embed = Embed(title="Informations du bot", color=Color.from_hex("#FF0000"))
+                embed = Embed(title="Informations du bot", color=Color.from_hex("#FF0000"), timestamp=Timestamp.now())
                 embed.add_field(name="Développé en", value="Python, avec [interactions.py (v5)](https://github.com/interactions-py/interactions.py)", inline=True)
                 embed.add_field(name="Créé le", value=f"<t:1685136462:F>", inline=False)
                 embed.add_field(name="Créé par", value=self.bot.owner, inline=False)

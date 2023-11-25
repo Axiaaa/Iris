@@ -1,5 +1,5 @@
 from interactions import *
-import random, datetime
+import random
 
 class Eightball(Extension):
 
@@ -64,7 +64,7 @@ class Eightball(Extension):
         embed.add_field(name="Question", value=question, inline=True)
         embed.add_field(name="Réponse", value=random.choice(self.responses))
         embed.set_footer(text=f"Posée par {ctx.author.display_name}", icon_url=ctx.author.avatar.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = Timestamp.now()
         await ctx.send(embed=embed)
 
 

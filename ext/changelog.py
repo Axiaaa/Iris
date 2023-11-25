@@ -35,6 +35,7 @@ class Changelog(Extension):
         modal_ctx: ModalContext = await ctx.bot.wait_for_modal(my_modal)
         embed = Embed(title="Nouveau changelog !\t:tada:", description=f"\nChangements apportés par cette mise à jour :\n\n {modal_ctx.responses['changelogtext']}")
         embed.set_footer(text=f"Pipo#4026 - {modal_ctx.responses['version']}", icon_url=self.bot.user.avatar_url)
+        embed.timestamp = Timestamp.now()
         await ctx.channel.send(embed=embed)
         await modal_ctx.send("Changelog ajouté !", ephemeral=True)
 

@@ -1,7 +1,4 @@
 from interactions import *
-import datetime
-
-
 
 class Serverinfo(Extension):
 
@@ -24,7 +21,7 @@ class Serverinfo(Extension):
         embed.add_field(name="Nombre de boosts", value=ctx.guild.premium_subscription_count, inline=True)
         embed.add_field("Créé le", value=ctx.guild.created_at.strftime("%d/%m/%Y à %H:%M:%S"), inline=True)
         embed.set_footer(text=f"ID du serveur : {ctx.guild.id}", icon_url=ctx.guild.icon.url)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = Timestamp.now()
         embed.add_field(name="Propriétaire", value=f"<@{ctx.guild._owner_id}>")
         embed.add_field(name="Rôles", value=", ".join([role.mention for role in ctx.guild.roles]))
         await ctx.send(embed=embed)

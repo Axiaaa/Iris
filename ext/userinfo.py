@@ -1,6 +1,4 @@
 from interactions import *
-import datetime
-
 
 class Userinfo(Extension):
 
@@ -20,8 +18,11 @@ class Userinfo(Extension):
 
         if user is None:
             user = ctx.author
-        embed = Embed(title="Informations de l'utilisateur", color=0x00ff00)   
-        embed.add_field(name="Pseudo", value=f"{user.display_name}#{user.discriminator}", inline=True)
+        embed = Embed(title="Informations de l'utilisateur", color=0x00ff00)
+        if user.discriminator == 0:
+            embed.add_field(name="Pseudo", value=f"{user.display_name}#{user.discriminator}", inline=True)
+        else:
+            embed.add_field(name="Pseudo", value=f"{user.display_name}", inline=True)
         embed.add_field(name="ID", value=user.id, inline=True)
         embed.add_field(name="Bot ?", value=user.bot, inline=True)
         embed.add_field(name="Créé le", value=user.created_at.strftime("%d/%m/%Y à %H:%M:%S"), inline=True)
@@ -29,7 +30,7 @@ class Userinfo(Extension):
         embed.add_field(name="Rejoint le", value=user.joined_at.strftime("%d/%m/%Y à %H:%M:%S"), inline=True)
         roles_value = " ".join([role.mention for role in user.roles]) if user.roles else "Pas de rôles"
         embed.add_field(name="Rôles", value=roles_value, inline=True)
-        embed.timestamp = datetime.datetime.utcnow()
+        embed.timestamp = Timestamp.now()
         embed.add_image(user.avatar.url)
         await ctx.send(embed=embed)
 

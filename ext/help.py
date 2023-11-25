@@ -16,7 +16,7 @@ class Help(Extension):
         """
         help = Embed(
             title="Voici la liste de toutes les commandes disponibles",
-            footer=EmbedFooter(text="Bot créé par Nephtys#4243, à contacter si besoin.", icon_url=self.bot.user.avatar_url))  
+            footer=EmbedFooter(text="Bot créé par Nephtys, à contacter si besoin.", icon_url=self.bot.user.avatar_url))  
         help.add_field(name="/info", value="Affiche les informations du bot")
         help.add_field(name="/dire", value="Fait parler le bot")
         help.add_field(name="/shifumi", value="Joue au shifumi avec le bot")
@@ -32,6 +32,7 @@ class Help(Extension):
         help.add_field(name="/userinfo", value="Affiche les informations d'un utilisateur")
         help.add_field(name="/serveurinfo", value="Affiche les informations du serveur")    
         help.add_field(name=":warning: **Owner-Only** | /reload", value="Recharge les extensions du bot")
+        help.Timestamp = Timestamp.now()
         await ctx.send(embed=help)
 
 
