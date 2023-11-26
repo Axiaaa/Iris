@@ -1,8 +1,9 @@
 import interactions, os
+from interactions import is_owner
 
 class Reload(interactions.Extension): 
 
-    # is_owner()
+    is_owner()
     @interactions.slash_command(
             name="reload", 
             description="Cette commande permet de recharger les extensions du bot.",
@@ -28,6 +29,7 @@ class Reload(interactions.Extension):
                 print(f"{ext} a été rechargé !")
 
         reload_extensions(self.bot, "ext", "ext.")
+        reload_extensions(self.bot, "utils", "utils.")
         await ctx.respond(content="Fait !", ephemeral=True)
 
 

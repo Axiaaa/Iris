@@ -20,7 +20,7 @@ class Info(Extension):
                 embed.add_field(name="Créé par", value=self.bot.owner, inline=False)
                 embed.add_field(name="Serveurs", value=len(self.bot.guilds), inline=True)
                 embed.add_field(name="Latence", value=f"{round(self.bot.latency * 100)} ms", inline=True)
-                embed.add_field("Pour m'inviter sur votre serveur", value = "Cliquez **[ici](https://discord.com/api/oauth2/authorize?client_id=1111756058902409327&permissions=8&scope=bot)**")
+                # embed.add_field("Pour m'inviter sur votre serveur", value = "Cliquez **[ici](https://discord.com/api/oauth2/authorize?client_id=1111756058902409327&permissions=8&scope=bot)**")
                 await ctx.send(embed=embed)
             except OverflowError : 
                 await ctx.send("La commande est indisponible pour le moment. Réessayes dans quelques minutes.", ephemeral=True)

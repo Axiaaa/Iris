@@ -27,9 +27,5 @@ class Serverinfo(Extension):
         await ctx.send(embed=embed)
         
 
-
-
-
-
 def setup(bot):
     Serverinfo(bot)
