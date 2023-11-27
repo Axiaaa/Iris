@@ -20,4 +20,5 @@ def load_extensions(bot, folder, folder_name="", exclude_files=[]):
 
 load_extensions(bot, "ext", "ext.")
 load_extensions(bot, "utils", "utils.")
+load_extensions(bot, "moderation", "moderation.")
 bot.start()
