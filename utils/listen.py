@@ -1,5 +1,7 @@
 from interactions import *
 import logging
+from beanie import Document
+from database import Sanctions, Optional
 
 class Listen(Extension) : 
 
@@ -22,5 +24,17 @@ class Listen(Extension) :
         if self.bot.user.mention in event.message.content:
             await event.message.reply("Salut ! Je vois que tu as essayé de me ping, mon préfix est `/` ! Pour plus d'informations, fais `/help`")
 
+
+    @listen(event_name=events.GuildJoin)
+    async def on_guild_join(self, event : events.GuildJoin):
+        class Server(Document):
+            name : str
+            id : int
+            owner : Member
+            sanctions : Optional[list[Sanctions]] = None
+        
+        server = await Server(name=event.guild.name, id=event.guild.id, owner=event.guild.get_owner())
+        await server.insert()
+        
 def setup(bot):
     Listen(bot)
