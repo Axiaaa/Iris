@@ -28,7 +28,8 @@ class Unban(Extension) :
                 title="Unban",
                 description=f"<@{utilisateur.id}> a bien été unban !",
                 timestamp=Timestamp.now(),
-                color= "#32CD32"
+                color= "#32CD32",
+                thumbnail=utilisateur.avatar_url
             )
             await ctx.channel.send(embed=embed)
             await ctx.respond("Fait !", ephemeral=True)

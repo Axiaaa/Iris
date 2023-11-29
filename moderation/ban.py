@@ -1,5 +1,5 @@
 from interactions import *
-
+from utils.db_cmds import *
 
 class Ban(Extension):
 
@@ -39,14 +39,14 @@ class Ban(Extension):
                 title="Ban",
                 description=f"<@{utilisateur.id}> a bien été bannis !",
                 timestamp=Timestamp.now(),
-                color= "#32CD32"
+                color= "#32CD32",
+                thumbnail=utilisateur.avatar_url
             )
             if raison : 
                 embed.add_field("Raison :", raison)
             await ctx.channel.send(embed=embed)
             await ctx.respond("Fait !", ephemeral=True)
-            # if Utilisateur.bot :
-            #     await ctx.respond("Je ne peux pas Baner un bot")
+            await DB_commands.DB_add_ban(ctx, raison, utilisateur)
         except errors.Forbidden : 
             await ctx.respond("Je n'ai pas réussi à bannir cette personne. Veillez à ce que mon rôle soit bien positioné", ephemeral=True)
         

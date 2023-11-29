@@ -1,7 +1,6 @@
 from interactions import *
-from const import TOKEN
+from const import TOKEN, DB_URL
 import logging, os
-
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s %(levelname)s %(message)s",
@@ -20,6 +19,6 @@ def load_extensions(bot, folder, folder_name="", exclude_files=[]):
         bot.load_extension(f"{folder_name}{ext}")
 
 load_extensions(bot, "ext", "ext.")
-load_extensions(bot, "utils", "utils.", ["database.py"])
+load_extensions(bot, "utils", "utils.", exclude_files=["db.py"])
 load_extensions(bot, "moderation", "moderation.")
 bot.start()

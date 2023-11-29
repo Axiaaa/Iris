@@ -36,7 +36,8 @@ class Kick(Extension):
                 title="Kick",
                 description=f"<@{utilisateur.id}> a bien été kick !",
                 timestamp=Timestamp.now(),
-                color= "#32CD32"
+                color= "#32CD32",
+                thumbnail=utilisateur.avatar_url
             )
             if raison : 
                 embed.add_field("Raison :", raison)
