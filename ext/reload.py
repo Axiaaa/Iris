@@ -6,8 +6,7 @@ class Reload(interactions.Extension):
     is_owner()
     @interactions.slash_command(
             name="reload", 
-            description="Cette commande permet de recharger les extensions du bot.",
-            default_member_permissions= interactions.Permissions.ADMINISTRATOR
+            description="Cette commande permet de recharger les extensions du bot."
             )
     async def reload(self, ctx : interactions.InteractionContext):
         def reload_extensions(bot, folder, prefix="", exclude_files=[]):

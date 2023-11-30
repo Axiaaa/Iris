@@ -1,4 +1,5 @@
 from interactions import *
+import logging
 
 class Dire(Extension):
     @slash_command(name="dire", description="Fais parler le bot")
@@ -15,6 +16,7 @@ class Dire(Extension):
             None
         """ 
         await ctx.send("Message envoyé :white_check_mark:", ephemeral=True)
+        logging.info(f"{ctx.author.username} ({ctx.author_id}) a utilisé /dire pour envoyer : {texte}")
         await ctx.channel.send(texte)
 
 def setup(bot):
