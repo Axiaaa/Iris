@@ -5,7 +5,8 @@ class Ban(Extension):
 
     @slash_command(
             name="ban",
-            description="Bannir un membre du serveur")
+            description="Bannir un membre du serveur",
+            default_member_permissions= Permissions.BAN_MEMBERS)
     @slash_option(
         name="utilisateur",
         description="Utilisateur à Ban",
@@ -37,7 +38,7 @@ class Ban(Extension):
             await ctx.guild.ban(utilisateur, reason=raison, delete_message_days=supprimer_message)
             embed = Embed(
                 title="Ban",
-                description=f"<@{utilisateur.id}> a bien été bannis !",
+                description=f"<@{utilisateur.id}> a bien été banni !",
                 timestamp=Timestamp.now(),
                 color= "#32CD32",
                 thumbnail=utilisateur.avatar_url

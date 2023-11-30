@@ -6,7 +6,7 @@ class Unban(Extension) :
     @slash_command(
         name="unban",
         description="Unban un utilisateur du serveur",
-        default_member_permissions= Permissions.ADMINISTRATOR
+        default_member_permissions= Permissions.BAN_MEMBERS
     )
     @slash_option(
         name="utilisateur",
@@ -18,7 +18,7 @@ class Unban(Extension) :
         name="raison",
         description="Raison du ban",
         opt_type=OptionType.STRING,
-        required=True
+        required=False
     )
     async def unban(self, ctx : InteractionContext, utilisateur : User, raison : str = None):
 

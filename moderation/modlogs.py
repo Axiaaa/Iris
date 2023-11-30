@@ -8,6 +8,7 @@ class ModLogs(Extension) :
     @slash_command(
         name="modlogs",
         description="Affiche les logs de modération du serveur",
+        default_member_permissions= Permissions.MANAGE_MESSAGES and Permissions.KICK_MEMBERS
     )
     @slash_option(
         name="utilisateur",
@@ -17,11 +18,9 @@ class ModLogs(Extension) :
     )
     async def modlogs(self, ctx : InteractionContext, utilisateur : User):
 
-    
         if not utilisateur :
             await ctx.respond("Cet utilisateur n'existe pas !", ephemeral=True)
             return
-    
         embed = Embed(
             title="Logs de modération",
             description=f"Logs de modération de <@{utilisateur.id}>",

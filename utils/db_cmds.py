@@ -5,7 +5,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 import logging
 from const import DB_URL
-from pydantic import BaseModel
 from utils.db import Server, Sanctions
 import datetime
 
@@ -48,6 +47,24 @@ class DB_commands(Extension) :
         await serv.save()
         logging.info(f"{target_user.global_name} a été kick du serveur {ctx.guild.name} !")
 
+    async def DB_add_mute(ctx : InteractionContext, duree : str, reason : str, target_user : Member):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        serv.sanctions.append(
+            Sanctions(
+                user_id = f"{target_user.id}",
+                user_name = f"{target_user.global_name}",
+                reason = f"{reason}\nDurée : {duree}",
+                mod_id = f"{ctx.author.id}",
+                mod_name = f"{ctx.author.global_name}",
+                s_type = "mute",
+                date = f"{datetime.datetime.utcnow()}"
+            )
+        )
+        await serv.save()
+        logging.info(f"{target_user.global_name} a été mute du serveur {ctx.guild.name} !")
+        
     
     async def DB_add_unban(ctx : InteractionContext, reason : str, target_user : Member):
         client = AsyncIOMotorClient(f"{DB_URL}")
@@ -66,9 +83,26 @@ class DB_commands(Extension) :
         )
         await serv.save()
         logging.info(f"{target_user.global_name} a été débanni du serveur {ctx.guild.name} !")
-
     
-    async def get_logs(ctx : InteractionContext, target_user : Member, embed : Embed):
+    async def DB_add_unmute(ctx : InteractionContext, reason : str, target_user : Member):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        serv.sanctions.append(
+            Sanctions(
+                user_id = f"{target_user.id}",
+                user_name = f"{target_user.global_name}",
+                reason = f"{reason}",
+                mod_id = f"{ctx.author.id}",
+                mod_name = f"{ctx.author.global_name}",
+                s_type = "unmute",
+                date = f"{datetime.datetime.utcnow()}"
+            )
+        )
+        await serv.save()
+        logging.info(f"{target_user.global_name} a été unmute du serveur {ctx.guild.name} !")
+    
+    async def DB_get_logs(ctx : InteractionContext, target_user : Member, embed : Embed):
         client = AsyncIOMotorClient(f"{DB_URL}")
         await init_beanie(database=client.db_name, document_models=[Server])
         serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
@@ -77,12 +111,11 @@ class DB_commands(Extension) :
         for log in logs :
             if log.user_id == f"{target_user.id}" :
                 embed.add_field(
-                    name=f"{log.s_type} par {log.mod_name} ({log.mod_id}) le {log.date}",
-                    value=f"Raison : {log.reason}",
+                    name=f"{log.s_type.upper()}",
+                    value=f"Raison : {log.reason}\nModérateur : <@{log.mod_id}>\nDate : {log.date[:19]}\nID : ||{log.id}||",
                     inline=False
                 )
         return embed
-
 
     async def get_serv_info(event: events.GuildJoin):
         client = AsyncIOMotorClient(f"{DB_URL}")

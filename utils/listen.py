@@ -1,7 +1,6 @@
 from interactions import *
 import logging
-from utils.db_cmds import get_serv_info
-
+from utils.db_cmds import DB_commands
 
 class Listen(Extension) : 
 
@@ -26,7 +25,7 @@ class Listen(Extension) :
 
     @listen(event_name=events.GuildJoin)
     async def on_guild_join(self, event: events.GuildJoin):
-        await get_serv_info(event)
+        await DB_commands.get_serv_info(event)
 
 
 def setup(bot):

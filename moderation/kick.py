@@ -5,7 +5,8 @@ class Kick(Extension):
 
     @slash_command(
             name="kick",
-            description="Kick un membre du serveur")
+            description="Kick un membre du serveur",
+            default_member_permissions= Permissions.KICK_MEMBERS)
     @slash_option(
         name="utilisateur",
         description="Utilisateur à kick",
