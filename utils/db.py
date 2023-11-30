@@ -24,21 +24,3 @@ class Server(Document):
     sanctions : list[Sanctions] = []
     
 DB_URL = config("DB_URL")
-
-
-async def get_serv_info(event: events.GuildJoin):
-    client = AsyncIOMotorClient(f"{DB_URL}")
-    await init_beanie(database=client.db_name, document_models=[Server])
-    srv_id = event.guild.id
-    serv = await Server.find_one(Server.srv_id == f"{srv_id}")
-    if serv is None:
-        serv = Server(
-            srv_id = f"{event.guild.id}",
-            name = event.guild.name,
-            owner_id = event.guild.get_owner().id,
-            owner_name = event.guild.get_owner().global_name
-        )
-        await serv.insert()
-        logging.info(f"Serveur {event.guild.name} ajouté à la base de donnée !")
-    else:
-        logging.info(f"Serveur {event.guild.name} déjà présent dans la base de donnée !")

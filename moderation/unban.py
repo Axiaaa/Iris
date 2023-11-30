@@ -1,4 +1,5 @@
-from interactions import * 
+from interactions import *
+from utils.db_cmds import DB_commands
 
 class Unban(Extension) :
 
@@ -13,7 +14,13 @@ class Unban(Extension) :
         opt_type=OptionType.USER,
         required=True
     )
-    async def unban(self, ctx : InteractionContext, utilisateur : User):
+    @slash_option(
+        name="raison",
+        description="Raison du ban",
+        opt_type=OptionType.STRING,
+        required=True
+    )
+    async def unban(self, ctx : InteractionContext, utilisateur : User, raison : str = None):
 
         try :
             if not utilisateur :
@@ -31,8 +38,11 @@ class Unban(Extension) :
                 color= "#32CD32",
                 thumbnail=utilisateur.avatar_url
             )
+            if raison :
+                embed.add_field(name="Raison", value=raison, inline=False)
             await ctx.channel.send(embed=embed)
             await ctx.respond("Fait !", ephemeral=True)
+            await DB_commands.DB_add_unban(ctx, raison, utilisateur)
 
         except errors.NotFound :
             await ctx.respond("Cet utilisateur n'est pas bannis !", ephemeral=True)

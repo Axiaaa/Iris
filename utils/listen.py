@@ -1,6 +1,6 @@
 from interactions import *
 import logging
-from utils.db import get_serv_info
+from utils.db_cmds import get_serv_info
 
 
 class Listen(Extension) : 
