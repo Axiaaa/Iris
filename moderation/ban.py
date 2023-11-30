@@ -50,9 +50,6 @@ class Ban(Extension):
             await DB_commands.DB_add_ban(ctx, raison, utilisateur)
         except errors.Forbidden : 
             await ctx.respond("Je n'ai pas réussi à bannir cette personne. Veillez à ce que mon rôle soit bien positioné", ephemeral=True)
-        
-        #TODO : 
-        #DATABASE & LOGS
 
 def setup(bot):
     Ban(bot)

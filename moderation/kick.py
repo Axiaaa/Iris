@@ -49,9 +49,6 @@ class Kick(Extension):
         except errors.Forbidden : 
             await ctx.respond("Je n'ai pas réussi à kicker cette personne. Veillez à ce que mon rôle soit bien positioné", ephemeral=True)
         
-        #TODO : 
-        #DATABASE & LOGS
-
 
 def setup(bot):
     Kick(bot)

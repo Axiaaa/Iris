@@ -124,6 +124,5 @@ class Mute(Extension):
             await ctx.send("Cet utilisateur n'existe pas !", ephemeral=True)
             return
 
-
 def setup(bot):
     Mute(bot)

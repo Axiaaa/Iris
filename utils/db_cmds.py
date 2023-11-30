@@ -116,6 +116,17 @@ class DB_commands(Extension) :
                     inline=False
                 )
         return embed
+    
+    async def DB_del_sanction(ctx : InteractionContext, sanction_id : PydanticObjectId):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        logs = serv.sanctions
+        for log in logs :
+            if log.id == sanction_id :
+                serv.sanctions.remove(log)
+        await serv.save()
+        logging.info(f"Sanction {sanction_id} supprimée !")
 
     async def get_serv_info(event: events.GuildJoin):
         client = AsyncIOMotorClient(f"{DB_URL}")

@@ -1,8 +1,6 @@
 from interactions import *
 from utils.db_cmds import DB_commands
 
-
-
 class ModLogs(Extension) :
 
     @slash_command(
