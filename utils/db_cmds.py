@@ -77,7 +77,7 @@ class DB_commands(Extension) :
         for log in logs :
             if log.user_id == f"{target_user.id}" :
                 embed.add_field(
-                    name=f"{log.s_type} par {log.mod_name} le {log.date}",
+                    name=f"{log.s_type} par {log.mod_name} ({log.mod_id}) le {log.date}",
                     value=f"Raison : {log.reason}",
                     inline=False
                 )

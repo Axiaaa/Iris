@@ -1,5 +1,5 @@
 from interactions import *
-
+from utils.db_cmds import DB_commands
 
 class Kick(Extension):
 
@@ -43,8 +43,8 @@ class Kick(Extension):
                 embed.add_field("Raison :", raison)
             await ctx.channel.send(embed=embed)
             await ctx.respond("Fait !", ephemeral=True)
-            # if Utilisateur.bot :
-            #     await ctx.respond("Je ne peux pas kicker un bot")
+            await DB_commands.DB_add_kick(ctx, raison, utilisateur)
+
         except errors.Forbidden : 
             await ctx.respond("Je n'ai pas réussi à kicker cette personne. Veillez à ce que mon rôle soit bien positioné", ephemeral=True)
         
