@@ -6,3 +6,7 @@ La majorité du code est réalise en stream -> https://www.twitch.tv/nephtyslove
 
 
 Pour le moment, Iris est à un stade d'alpha. Cependant, vous pouvez créer des PR ou des issues si vous rencontrez des problèmes avec le code actuel.
+
+
+
+Iris utilise [interactions.py](https://interactions-py.github.io/interactions.py/) et [mongoDB](https://www.mongodb.com/fr-fr).
