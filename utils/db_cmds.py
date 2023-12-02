@@ -16,6 +16,7 @@ class DB_commands(Extension) :
         serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
         serv.sanctions.append(
             Sanctions(
+                id = PydanticObjectId(),
                 user_id = f"{target_user.id}",
                 user_name = f"{target_user.global_name}",
                 reason = f"{reason}",
@@ -35,6 +36,7 @@ class DB_commands(Extension) :
         serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
         serv.sanctions.append(
             Sanctions(
+                id = PydanticObjectId(),
                 user_id = f"{target_user.id}",
                 user_name = f"{target_user.global_name}",
                 reason = f"{reason}",
@@ -53,6 +55,7 @@ class DB_commands(Extension) :
         serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
         serv.sanctions.append(
             Sanctions(
+                id = PydanticObjectId(),
                 user_id = f"{target_user.id}",
                 user_name = f"{target_user.global_name}",
                 reason = f"{reason}\nDurée : {duree}",
@@ -64,14 +67,34 @@ class DB_commands(Extension) :
         )
         await serv.save()
         logging.info(f"{target_user.global_name} a été mute du serveur {ctx.guild.name} !")
+
+    async def DB_add_warn(ctx : InteractionContext, reason : str, target_user : Member):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        serv.sanctions.append(
+            Sanctions(
+                id = PydanticObjectId(),
+                user_id = f"{target_user.id}",
+                user_name = f"{target_user.global_name}",
+                reason = f"{reason}",
+                mod_id = f"{ctx.author.id}",
+                mod_name = f"{ctx.author.global_name}",
+                s_type = "warn",
+                date = f"{datetime.datetime.utcnow()}"
+            )
+        )
+        await serv.save()
+        logging.info(f"{target_user.global_name} a été warn du serveur {ctx.guild.name} !")
+
         
-    
     async def DB_add_unban(ctx : InteractionContext, reason : str, target_user : Member):
         client = AsyncIOMotorClient(f"{DB_URL}")
         await init_beanie(database=client.db_name, document_models=[Server])
         serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
         serv.sanctions.append(
             Sanctions(
+                id = PydanticObjectId(),
                 user_id = f"{target_user.id}",
                 user_name = f"{target_user.global_name}",
                 reason = f"{reason}",
@@ -90,6 +113,7 @@ class DB_commands(Extension) :
         serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
         serv.sanctions.append(
             Sanctions(
+                id = PydanticObjectId(),
                 user_id = f"{target_user.id}",
                 user_name = f"{target_user.global_name}",
                 reason = f"{reason}",

@@ -35,7 +35,7 @@ class Unban(Extension) :
                 title="Unban",
                 description=f"<@{utilisateur.id}> a bien été unban !",
                 timestamp=Timestamp.now(),
-                color= "#32CD32",
+                color= "#2596be",
                 thumbnail=utilisateur.avatar_url
             )
             if raison :

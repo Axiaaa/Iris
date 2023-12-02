@@ -61,7 +61,7 @@ class Mute(Extension):
             date = datetime.datetime.now() + datetime.timedelta(seconds=duree)
             await user.timeout(communication_disabled_until=date, reason=raison)
             await ctx.send(f"<@{user.id}> a bien été mute !", ephemeral=True)
-            embed = Embed(title=f"Mute", description=f"<@{user.id}> a été mute!", thumbnail=user.avatar_url, color="#32CD32")
+            embed = Embed(title=f"Mute", description=f"<@{user.id}> a été mute!", thumbnail=user.avatar_url, color="#2596be")
             if not raison:
                 embed.add_field(name=f"Raison : ", value=f"{raison}\n")
             embed.add_field(name="Durée", value=f"{duree_mute} {unite.lower()}")
@@ -110,7 +110,7 @@ class Mute(Extension):
 
             await user.timeout(communication_disabled_until=None, reason=raison)
             await ctx.send(f"<@{user.id}> a bien été unmute !", ephemeral=True)
-            embed = Embed(title=f"Unmute", description=f"<@{user.id}> a été unmute!", thumbnail=user.avatar_url, color="#32CD32")
+            embed = Embed(title=f"Unmute", description=f"<@{user.id}> a été unmute!", thumbnail=user.avatar_url, color="#2596be")
             if not raison:
                 embed.add_field(name=f"Raison : ", value=f"{raison}\n")
             await ctx.channel.send(embed=embed)

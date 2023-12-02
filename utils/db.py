@@ -8,7 +8,7 @@ import logging
 
 
 class Sanctions(BaseModel):
-    id : PydanticObjectId
+    id : PydanticObjectId()
     user_id : str
     user_name : str
     reason : str

@@ -37,7 +37,7 @@ class Kick(Extension):
                 title="Kick",
                 description=f"<@{utilisateur.id}> a bien été kick !",
                 timestamp=Timestamp.now(),
-                color= "#32CD32",
+                color= "#2596be",
                 thumbnail=utilisateur.avatar_url
             )
             if raison : 

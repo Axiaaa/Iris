@@ -6,7 +6,7 @@ class Listen(Extension) :
 
     @listen(event_name=events.Startup)
     async def on_startup(self, ctx : InteractionContext):
-        logging.info("bot_sans_nom est prêt !")
+        logging.info("Iris est prêt !")
 
     @listen(disable_default_listeners=True)
     async def on_command_error(self, event : errors.CommandOnCooldown):
@@ -26,7 +26,6 @@ class Listen(Extension) :
     @listen(event_name=events.GuildJoin)
     async def on_guild_join(self, event: events.GuildJoin):
         await DB_commands.get_serv_info(event)
-
 
 def setup(bot):
     Listen(bot)

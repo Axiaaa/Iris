@@ -40,7 +40,7 @@ class Ban(Extension):
                 title="Ban",
                 description=f"<@{utilisateur.id}> a bien été banni !",
                 timestamp=Timestamp.now(),
-                color= "#32CD32",
+                color= "#2596be",
                 thumbnail=utilisateur.avatar_url
             )
             if raison : 

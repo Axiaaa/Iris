@@ -23,7 +23,7 @@ class ModLogs(Extension) :
             title="Logs de modération",
             description=f"Logs de modération de <@{utilisateur.id}>",
             timestamp=Timestamp.now(),
-            color= "#32CD32",
+            color= "#2596be",
             thumbnail=utilisateur.avatar_url
         )
         final_embed = await DB_commands.DB_get_logs(ctx, utilisateur, embed)

@@ -4,6 +4,7 @@ from utils.db import PydanticObjectId
 
 class DelSanctions(Extension) :
 
+    is_owner()
     @slash_command(
         name="delsanctions",
         description="Supprime les sanctions d'un utilisateur",

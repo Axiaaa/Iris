@@ -13,7 +13,7 @@ class Serverinfo(Extension):
         Returns:
             None
         """
-        embed = Embed(title="Informations du serveur", color=0x00ff00)   
+        embed = Embed(title="Informations du serveur", color="#2596be")   
         embed.add_field(name="Nom du serveur", value=ctx.guild.name, inline=True)
         embed.add_field(name="Nombre de membres", value=ctx.guild.member_count, inline=True)
         embed.add_field(name="Nombre de rôles", value=len(ctx.guild.roles), inline=True)

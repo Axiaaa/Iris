@@ -12,7 +12,7 @@ class Starboard(Extension):
             embed = Embed(
                 title=f"De {message.author.display_name}",
                 description=message.content,
-                color=Color.from_hex("#f1c40f"),
+                color=Color.from_hex("#2596be"),
                 timestamp=message.created_at,
                 thumbnail=message.author.avatar_url,
             )
