@@ -27,7 +27,7 @@ class Reload(interactions.Extension):
                 bot.reload_extension(f"{prefix}{ext}")
                 logging.debug(f"{ext} a été rechargé !")
 
-        reload_extensions(self.bot, "ext", "ext.")
+        reload_extensions(self.bot, "extensions", "extensions.")
         reload_extensions(self.bot, "utils", "utils.", exclude_files=["db.py"])
         reload_extensions(self.bot, "moderation", "moderation.")
         await ctx.respond(content="Fait !", ephemeral=True)
