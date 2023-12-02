@@ -13,7 +13,7 @@ class Clear(Extension) :
     async def clear(self, ctx : SlashContext, nombre_messages : int):
         try : 
             await ctx.channel.purge(nombre_messages)
-            await ctx.send(f"Il y a {nombre_messages} messages supprimés", ephemeral=True)
+            await ctx.send(f"J'ai bien supprimé {nombre_messages} messages !", ephemeral=True)
         except errors.HTTPException :
             await ctx.send("Une erreur est survenue !", ephemeral=True)
 

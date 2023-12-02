@@ -27,7 +27,6 @@ class Help(Extension):
         help.add_field(name="/nick", value="Change le pseudo d'un membre")
         help.add_field(name="/delchannel", value="Supprime un salon")
         help.add_field(name="/delrole", value="Supprime un rôle")
-        help.add_field(name="/gay", value="Affiche le pourcentage de gayitude d'un utilisateur")
         help.add_field(name="/8ball", value="Pose une question à la boule magique")
         help.add_field(name="/userinfo", value="Affiche les informations d'un utilisateur")
         help.add_field(name="/serveurinfo", value="Affiche les informations du serveur")    

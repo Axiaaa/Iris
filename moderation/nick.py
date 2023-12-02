@@ -19,7 +19,7 @@ class Nick(Extension) :
         if utilisateur == None : 
             utilisateur = ctx.author
         await utilisateur.edit_nickname(new_nickname=pseudo)
-        await ctx.send(f"Le pseudo de {utilisateur.tag} a bien été changé en {pseudo}", ephemeral=True)
+        await ctx.send(f"Le pseudo de <@{utilisateur.id}> a bien été changé en {pseudo}", ephemeral=True)
 
 def setup(bot):
     Nick(bot)

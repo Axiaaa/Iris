@@ -32,6 +32,5 @@ class Reload(interactions.Extension):
         reload_extensions(self.bot, "moderation", "moderation.")
         await ctx.respond(content="Fait !", ephemeral=True)
 
-
 def setup(bot): 
     Reload(bot)
