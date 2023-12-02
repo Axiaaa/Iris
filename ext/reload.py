@@ -1,4 +1,4 @@
-import interactions, os
+import interactions, os, logging
 from interactions import is_owner
 
 class Reload(interactions.Extension): 
@@ -25,7 +25,7 @@ class Reload(interactions.Extension):
             extensions = [file.replace(".py", "") for file in os.listdir(folder) if file.endswith(".py") and file not in exclude_files]
             for ext in extensions:
                 bot.reload_extension(f"{prefix}{ext}")
-                print(f"{ext} a été rechargé !")
+                logging.debug(f"{ext} a été rechargé !")
 
         reload_extensions(self.bot, "ext", "ext.")
         reload_extensions(self.bot, "utils", "utils.", exclude_files=["db.py"])
