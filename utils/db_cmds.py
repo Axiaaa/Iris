@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 import logging
 from const import DB_URL
-from utils.db import Server, Sanctions
+from utils.db import Server, Sanctions, DB_Roles, DB_User
 import datetime
 
 class DB_commands(Extension) :
@@ -162,13 +162,64 @@ class DB_commands(Extension) :
                 srv_id = f"{event.guild.id}",
                 name = event.guild.name,
                 owner_id = event.guild.get_owner().id,
-                owner_name = event.guild.get_owner().global_name
+                owner_name = event.guild.get_owner().global_name,
+                member_count= event.guild.member_count
             )
+            for role in event.guild.roles :
+                serv.role.append(
+                    DB_Roles(
+                        role_id = f"{role.id}",
+                        role_name = f"{role.name}",
+                        role_perms = str(role.permissions).split('|')
+                    )
+                )
+            for user in event.guild.members :
+                if not user.bot :
+                    serv.user.append(
+                        DB_User(
+                            user_id = f"{user.id}",
+                            user_name = f"{user.global_name}",
+                            user_perms = str(user.guild_permissions).split('|'),
+                            user_roles = [f"{role.name} {role.id}" for role in user.roles]
+                        )
+                )
+            
             await serv.insert()
             logging.info(f"Serveur {event.guild.name} ajouté à la base de donnée !")
         else:
             logging.info(f"Serveur {event.guild.name} déjà présent dans la base de donnée !")
 
+
+    async def update_serv_info(event : events.GuildUpdate):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{event.after.id}")
+        serv.name = event.after.name
+        serv.owner_id = event.after.get_owner().id
+        serv.owner_name = event.after.get_owner().global_name
+        serv.member_count = event.after.member_count
+        serv.role = []
+        serv.user = []
+        for role in event.after.roles :
+            serv.role.append(
+                DB_Roles(
+                    role_id = f"{role.id}",
+                    role_name = f"{role.name}",
+                    role_perms = str(role.permissions).split('|')
+                )
+            )
+        for user in event.after.members :
+            if not user.bot :
+                serv.user.append(
+                    DB_User(
+                        user_id = f"{user.id}",
+                        user_name = f"{user.global_name}",
+                        user_perms = str(user.guild_permissions).split('|'),
+                        user_roles = [f"{role.name} {role.id}" for role in user.roles]
+                    )
+            )
+        await serv.save()
+        logging.info(f"Serveur {event.after.name} mis à jour dans la base de donnée !")
 
 def setup(bot):
     DB_commands(bot)

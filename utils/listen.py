@@ -27,5 +27,10 @@ class Listen(Extension) :
     async def on_guild_join(self, event: events.GuildJoin):
         await DB_commands.get_serv_info(event)
 
+
+    @listen(event_name=events.GuildUpdate)
+    async def on_guild_update(self, event: events.GuildUpdate):
+        await DB_commands.update_serv_info(event)
+
 def setup(bot):
     Listen(bot)
