@@ -1,0 +1,5 @@
+decouple
+asyncio
+discord-py-interactions
+beanie
+pydantic

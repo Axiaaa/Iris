@@ -2,7 +2,7 @@ from decouple import config
 
 TOKEN = config('TOKEN')
 COOLDOWN_TIME_IN_SECS = 5
-DB_URL = config("DB_URL")
+DB_URL = config('DB_URL')
 STARBOARD_REAC_COUNT = 2
 STARBOARD_CHANNEL_ID = 1182413901325946940
-BOT_VERSION = "Beta 1.0.0"
+BOT_VERSION = "Beta 0.0.0"
