@@ -30,6 +30,7 @@ class Userinfo(Extension):
         embed.add_field(name="Rejoint le", value=user.joined_at.strftime("%d/%m/%Y à %H:%M:%S"), inline=True)
         roles_value = " ".join([role.mention for role in user.roles]) if user.roles else "Pas de rôles"
         embed.add_field(name="Rôles", value=roles_value, inline=True)
+        
         embed.timestamp = Timestamp.now()
         embed.add_image(user.avatar.url)
         await ctx.send(embed=embed)

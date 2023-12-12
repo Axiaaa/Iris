@@ -15,7 +15,7 @@ class Roll(Extension):
             None
         """
         roll = randint(1, 6)
-        await ctx.send(f"Tu as fait un {roll} :dice:!")
+        await ctx.send(f"Tu as fait un {roll} 🎲 !")
 
 
 def setup(bot):

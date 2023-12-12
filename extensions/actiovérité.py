@@ -89,7 +89,8 @@ class AouV(Extension):
             None 
         """
         embed=Embed(
-            title="Action ou Vérité ?"
+            title="Action ou Vérité ?",
+            color="#2596be"
         )
         buttons : list[ActionRow] = [
         ActionRow(
@@ -114,7 +115,7 @@ class AouV(Extension):
         embed=Embed(
             title="Action",
             description=f"**{random.choice(actions)}**",
-            color=0x00ff00,
+            color="#2596be",
             footer="Action générée avec ChatGPT."
         )
         await self.msg.edit(components=[], embed=embed)
@@ -125,7 +126,7 @@ class AouV(Extension):
         embed=Embed(
             title="Vérité",
             description=f"**{random.choice(vérités)}**",
-            color=0xff0000,
+            color="#2596be",
             footer="Vérité générée avec ChatGPT."
         )
         await self.msg.edit(components=[], embed=embed)

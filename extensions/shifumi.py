@@ -55,6 +55,7 @@ class Shifumi(Extension):
         ]
         await ctx.send(embed=Embed(
             title=f"Shifumi avec {ctx.author.display_name}",
+            color="#2596be",
             description="**Pierre** :rock:\n\n**Feuille** :roll_of_paper:\n\n**Ciseaux** :scissors:\n\nCliquez sur un des boutons pour choisir ? :arrow_heading_down:"), components=buttons)
         
 

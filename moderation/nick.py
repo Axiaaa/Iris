@@ -1,7 +1,5 @@
 from interactions import *
 
-
-
 class Nick(Extension) :
 
     @slash_command("nick", description="Change le pseudo d'un membre", default_member_permissions=Permissions.MANAGE_NICKNAMES)

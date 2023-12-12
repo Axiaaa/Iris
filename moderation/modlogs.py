@@ -26,6 +26,7 @@ class ModLogs(Extension) :
             color= "#2596be",
             thumbnail=utilisateur.avatar_url
         )
+        embed.set_footer(text="Pour supprimez des warns, contactez Nephtys")
         final_embed = await DB_commands.DB_get_logs(ctx, utilisateur, embed)
         await ctx.send(embed=final_embed)
 
