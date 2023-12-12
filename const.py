@@ -1,8 +1,6 @@
-from decouple import config
-
-TOKEN = config('TOKEN')
+TOKEN= "MTE3ODA0ODkzODUzNjg2OTkyOA.G9DV_W.56v1xROgo7jMVz4wcWgVsRXjy5qMKLgpfjGmd0"
 COOLDOWN_TIME_IN_SECS = 5
-DB_URL = config("DB_URL")
+DB_URL="mongodb+srv://hucam32:YpZCrEUJZ0GZNjw6@cluster.dduekxi.mongodb.net/"
 STARBOARD_REAC_COUNT = 2
 STARBOARD_CHANNEL_ID = 1182413901325946940
 BOT_VERSION = "Beta 1.0.0"

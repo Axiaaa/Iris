@@ -1,6 +1,5 @@
 from beanie import *
 from interactions import *
-from decouple import config
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
 from beanie import Document, init_beanie
@@ -41,4 +40,3 @@ class Server(Document):
     role : list[DB_Roles] = []
     user : list[DB_User] = []
 
-DB_URL = config("DB_URL")
