@@ -22,7 +22,7 @@ class Changelog(Extension) :
     
         await ctx.send_modal(modal=my_modal)
         modal_ctx: ModalContext = await ctx.bot.wait_for_modal(my_modal)
-        embed = Embed(title="Nouveau changelog !\t:tada:", description=f"\nChangements apportés par cette mise à jour :\n\n {modal_ctx.responses['changelogtext']}")
+        embed = Embed(title="Nouveau changelog !\t:tada:", description=f"\nChangements apportés par cette mise à jour :\n\n {modal_ctx.responses['changelogtext']}", color="#2596be")
         embed.set_footer(text=f"Iris {modal_ctx[modal_ctx.responses['version']]}", icon_url=self.bot.user.avatar_url)
         await ctx.channel.send(content= "<@&1182417319557873694>", embed=embed)
         await ctx.send("Changelog ajouté !", ephemeral=True)

@@ -1,7 +1,8 @@
-from decouple import config
-TOKEN= config("TOKEN")
+from decouple import config as environ
+
+TOKEN= environ("TOKEN")
 COOLDOWN_TIME_IN_SECS = 5
-DB_URL=config("DB_URL")
+DB_URL=environ("DB_URL")
 STARBOARD_REAC_COUNT = 2
 STARBOARD_CHANNEL_ID = 1182413901325946940
 BOT_VERSION = "Beta 1.0.0"
