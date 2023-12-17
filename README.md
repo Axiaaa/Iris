@@ -26,7 +26,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
    ```
 
 2. **Configurer les variables d'environnement :**
-   Créez un fichier `.env` à la racine du projet et configurez les variables nécessaires (par exemple, le token du bot, l'URL de la base de données, etc.).
+   Allez dans le fichier const.py à la racine du projet et configurez les variables nécessaires (par exemple, le token du bot, l'URL de la base de données, etc.).
 
 3. **Lancer le bot :**
    ```
