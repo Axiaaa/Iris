@@ -1,8 +1,27 @@
-from interactions import * 
+from interactions import *
 import datetime
 from utils.db_cmds import DB_commands
 
 class Mute(Extension):
+    DUREE_MAPPING = {
+        "Secondes": 1,
+        "Minutes": 60,
+        "Heures": 3600,
+        "Jours": 86400
+    }
+    MAX_MUTE_DURATION_SECONDS = 28 * 86400  # 28 jours
+
+    async def _validate_user(self, ctx, user):
+        if user not in ctx.guild.members:
+            await ctx.send("Cette personne n'est pas sur le serveur !", ephemeral=True)
+            return False
+        if user == ctx.author:
+            await ctx.send("Vous ne pouvez pas mute/unmute vous-même !", ephemeral=True)
+            return False
+        if user.bot:
+            await ctx.send("Vous ne pouvez pas mute/unmute un bot !", ephemeral=True)
+            return False
+        return True
 
     @slash_command(
             name="mute",
@@ -33,51 +52,33 @@ class Mute(Extension):
         description="Raison du mute",
         required=False,
         opt_type=OptionType.STRING)
-    async def mute(self, ctx : SlashContext, user: Member, duree=float, unite= str, raison=None):
-        try :
-            if user.communication_disabled_until : 
-                await ctx.send("Cette personne est déjà mute!", ephemeral=True)
-                return
-            if user not in ctx.guild.members :
-                await ctx.send("Cette personne n'est pas sur le serveur !", ephemeral=True)
-                return
-            if user == ctx.author :
-                await ctx.send("Vous ne pouvez pas vous mute vous-même !", ephemeral=True)
-                return
-            if user.bot :
-                await ctx.send("Vous ne pouvez pas mute un bot !", ephemeral=True)
-                return
-            
-            duree_mute = duree
-            if unite == "Secondes" :
-                duree = duree
-            elif unite == "Minutes" :
-                duree = duree * 60
-            elif unite == "Heures" :
-                duree = duree * 3600
-            elif unite == "Jours" :
-                duree = duree * 86400
+    async def mute(self, ctx: SlashContext, user: Member, duree: int, unite: str, raison=None):
+        if not await self._validate_user(ctx, user):
+            return
 
-            date = datetime.datetime.now() + datetime.timedelta(seconds=duree)
+        duree_seconds = duree * self.DUREE_MAPPING.get(unite, 1)
+        if duree_seconds > self.MAX_MUTE_DURATION_SECONDS:
+            await ctx.send("La durée du mute est trop longue ! Durée max : 28 jours", ephemeral=True)
+            return
+
+        try:
+            date = datetime.datetime.now() + datetime.timedelta(seconds=duree_seconds)
             await user.timeout(communication_disabled_until=date, reason=raison)
             await ctx.send(f"<@{user.id}> a bien été mute !", ephemeral=True)
-            embed = Embed(title=f"Mute", description=f"<@{user.id}> a été mute!", thumbnail=user.avatar_url, color="#2596be")
-            if not raison:
-                embed.add_field(name=f"Raison : ", value=f"{raison}\n")
-            embed.add_field(name="Durée", value=f"{duree_mute} {unite.lower()}")
+            embed = Embed(title="Mute", description=f"<@{user.id}> a été mute!", color="#2596be")
+            embed.set_thumbnail(url=user.avatar_url)
+            embed.add_field(name="Durée", value=f"{duree} {unite.lower()}", inline=False)
+            if raison:
+                embed.add_field(name="Raison", value=raison, inline=False)
             await ctx.channel.send(embed=embed)
-            await user.send(f"Vous avez été mute sur le serveur {ctx.guild.name}. Durée : {duree_mute} {unite.lower()}. Raison : {raison}")
-            await DB_commands.DB_add_mute(ctx,str(duree_mute) + " " + unite.lower(), raison, user)
-
-        except errors.Forbidden :
-            await ctx.send("Je n'ai pas la permission de mute ce membre ! Veillez à ce que mon rôle soit placé plus haut que celui du membre que vous voulez kick.", ephemeral=True)
-            return
-        except errors.HTTPException :
-            await ctx.send("La durée du mute est trop longue ! Durée max : 26 jours", ephemeral=True)
-            return
-        except errors.NotFound :
+            await user.send(f"Vous avez été mute sur le serveur {ctx.guild.name}. Durée: {duree} {unite.lower()}. Raison: {raison}")
+            await DB_commands.DB_add_mute(ctx, str(duree) + " " + unite.lower(), raison, user)
+        except errors.Forbidden:
+            await ctx.send("Je n'ai pas la permission de mute ce membre !", ephemeral=True)
+        except errors.HTTPException:
+            await ctx.send("Erreur lors de l'application du mute.", ephemeral=True)
+        except errors.NotFound:
             await ctx.send("Cet utilisateur n'existe pas !", ephemeral=True)
-            return
 
     @slash_command(
             name="unmute",
@@ -93,36 +94,24 @@ class Mute(Extension):
         description="Raison de l'unmute",
         required=False,
         opt_type=OptionType.STRING)
-    async def unmute(self, ctx : SlashContext, user: Member, raison=None):
-        try :
-            if not user.communication_disabled_until :
-                await ctx.send("Cette personne n'est pas mute !", ephemeral=True)
-                return
-            if user not in ctx.guild.members :
-                await ctx.send("Cette personne n'est pas sur le serveur !", ephemeral=True)
-                return
-            if user == ctx.author :
-                await ctx.send("Vous ne pouvez pas vous unmute vous-même !", ephemeral=True)
-                return
-            if user.bot :
-                await ctx.send("Vous ne pouvez pas unmute un bot !", ephemeral=True)
-                return
+    async def unmute(self, ctx: SlashContext, user: Member, raison=None):
+        if not await self._validate_user(ctx, user):
+            return
 
+        try:
             await user.timeout(communication_disabled_until=None, reason=raison)
             await ctx.send(f"<@{user.id}> a bien été unmute !", ephemeral=True)
-            embed = Embed(title=f"Unmute", description=f"<@{user.id}> a été unmute!", thumbnail=user.avatar_url, color="#2596be")
-            if not raison:
-                embed.add_field(name=f"Raison : ", value=f"{raison}\n")
+            embed = Embed(title="Unmute", description=f"<@{user.id}> a été unmute!", color="#2596be")
+            embed.set_thumbnail(url=user.avatar_url)
+            if raison:
+                embed.add_field(name="Raison", value=raison, inline=False)
             await ctx.channel.send(embed=embed)
-            await user.send(f"Vous avez été unmute sur le serveur {ctx.guild.name}. Raison : {raison}")
+            await user.send(f"Vous avez été unmute sur le serveur {ctx.guild.name}. Raison: {raison}")
             await DB_commands.DB_add_unmute(ctx, raison, user)
-
-        except errors.Forbidden :
-            await ctx.send("Je n'ai pas la permission d'unmute ce membre ! Veillez à ce que mon rôle soit placé plus haut que celui du membre que vous voulez kick.", ephemeral=True)
-            return
-        except errors.NotFound :
+        except errors.Forbidden:
+            await ctx.send("Je n'ai pas la permission d'unmute ce membre !", ephemeral=True)
+        except errors.NotFound:
             await ctx.send("Cet utilisateur n'existe pas !", ephemeral=True)
-            return
 
 def setup(bot):
     Mute(bot)
