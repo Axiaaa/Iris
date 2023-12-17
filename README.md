@@ -7,11 +7,14 @@ La majorité du code est réalise en stream :
 
 Pour le moment, Iris est à un stade d'alpha. Cependant, vous pouvez créer des PR ou des issues si vous rencontrez des problèmes avec le code actuel.
 
+## Le bot n'est pas encore invitable
+Si vous souhaitez tout de même le tester, vous pouvez soit cloner le repo sur votre machine, soit rejoindre le serveur de test/support : https://discord.gg/ZedGy4pF5A
+
 ## Prérequis
 
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
 
-- Python (version 3.x)
+- Python (version >= 3.10)
 - MongoDB (pour la base de données)
 - Visual studio build tools 2022 et les composants c++
 - Un compte Discord avec un bot créé dans le [Portail des Développeurs Discord](https://discord.com/developers/applications) [Uniquement pour la phase de test]
@@ -27,8 +30,9 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
 
 2. **Configurer les variables d'environnement :**
    Créez un fichier `.env` à la racine du projet et configurez les variables nécessaires (par exemple, le token du bot, l'URL de la base de données, etc.).
+   Vous pouvez voir les variables d'env nécessaires au fonctionnement du bot dans le ficher `const.py`.
 
-3. **Lancer le bot :**
+4. **Lancer le bot :**
    ```
    python main.py
    ```
@@ -74,7 +78,6 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
 
 **Permissions**
 
-Commercial use
 Modification
 Distribution
 Patent use
