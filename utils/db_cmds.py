@@ -68,6 +68,20 @@ class DB_commands(Extension) :
         await serv.save()
         logging.info(f"{target_user.global_name} a été mute du serveur {ctx.guild.name} !")
 
+    @staticmethod
+    async def get_warn_count(ctx: InteractionContext, user_id: str):
+        user_id_str = str(user_id)
+
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+
+        if serv is not None:
+            warn_count = sum(1 for sanction in serv.sanctions if sanction.user_id == user_id_str and sanction.s_type == "warn")
+            return warn_count
+        else:
+            return 0
+
     async def DB_add_warn(ctx : InteractionContext, reason : str, target_user : Member):
         client = AsyncIOMotorClient(f"{DB_URL}")
         await init_beanie(database=client.db_name, document_models=[Server])
