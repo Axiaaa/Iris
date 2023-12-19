@@ -1,8 +1,6 @@
-from decouple import config as environ
-
-TOKEN= environ("TOKEN")
+TOKEN= "MTE4NTY4Njk1NjgzMTY4MjU5MA.Gxdl0A.kPshQUML8Du1PciHtpL-LPJXmquY4y7OLvzGW4"
 COOLDOWN_TIME_IN_SECS = 5
-DB_URL=environ("DB_URL")
+DB_URL= "mongodb+srv://Legion:Legion57@cluster0.agi6gfs.mongodb.net/"
 STARBOARD_REAC_COUNT = 2
 STARBOARD_CHANNEL_ID = 1182413901325946940
 BOT_VERSION = "Beta 1.0.0"
