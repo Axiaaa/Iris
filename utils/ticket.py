@@ -1,6 +1,6 @@
 from interactions import *
 import logging
-import json
+from utils.db_cmds import DB_commands
 
 class Tickets(Extension): 
    
@@ -17,17 +17,15 @@ class Tickets(Extension):
         )
     async def ticket(self, ctx: InteractionContext, raison: str):
 
-        for channel in ctx.guild.get_channel(1185674072856731749).text_channels:
-            if channel and channel.topic is not None:
-                if channel.topic.endswith(str(ctx.author.id)):
-                    await ctx.send("Vous avez déjà un ticket")
-                    return
+        if await DB_commands.check_ticket(ctx, f"{ctx.author.id}"):
+            await ctx.send("Vous avez déjà un ticket d'ouvert !", ephemeral=True)
+            return
         ticket = await ctx.guild.create_channel(
             name=f"ticket-{ctx.author.username}",
             category=ctx.guild.get_channel(1185674072856731749),
             topic=f"Ticket de {ctx.author.username} pour {raison} | {ctx.author.id}",
             channel_type=ChannelType.GUILD_TEXT)
-        await ticket.set_permission(ctx.guild.get_role(1179840761781567508), view_channel=False)
+        await ticket.set_permission(ctx.guild.get_role(1179840761781567508), view_channel=False) # @everyone
         await ticket.set_permission(ctx.author, view_channel=True)
         embed = Embed(
             title=f"Ticket de {ctx.author.username}",
@@ -35,7 +33,8 @@ class Tickets(Extension):
             description=f"Vous avez crée ce ticket avec la raison suivante : {raison}\n\nUn membre du staff va vous répondre dans les plus brefs délais !",
             color="#2596be",
             timestamp=Timestamp.now()
-            )
+        )
+        embed.set_footer(text=f"ID du ticket : {ticket.id}")
         buttons : list[ActionRow] = [
                 ActionRow(
                     Button(
@@ -47,14 +46,24 @@ class Tickets(Extension):
         msg = await ticket.send(embed=embed, components=buttons)
         await msg.pin()
         await ctx.send("Ticket crée !", ephemeral=True)
+        await DB_commands.create_ticket(ctx, ticket)
+        logging.info(f"Ticket {ticket.name} crée par {ctx.author.username}")
 
     @listen(event_name="on_component")
-    async def button_ciseaux(self, event): 
+    async def bouttons_tickets(self, event): 
+        guild = event.ctx.guild
         if event.ctx.custom_id == "ticket_close":
-            await event.ctx.channel.set_permission(event.ctx.user, view_channel=False)
+            overwrites = {
+                guild.default_role: PermissionOverwrite(
+                    id=guild.default_role.id,
+                    type=0,
+                    allow= Permissions(0),
+                )
+            }
+            # await event.ctx.channel.set_permission(event.ctx.user, view_channel=False)
             await event.ctx.channel.send(embed=Embed(
                 title="Ticket fermé :lock:",
-                description=f"Le ticket a été fermé par {event.ctx.user.mention}",
+                description=f"Le ticket à été fermé", #Mention après ejection ? => par {event.ctx.user.mention}",
                 color="#2596be",
                 timestamp=Timestamp.now()
                 )
@@ -79,14 +88,15 @@ class Tickets(Extension):
                         emoji=":newspaper:",
                         label="Faire un transcript du ticket"
                     ))]
+            
             await event.ctx.message.edit(components=buttons)
+            await DB_commands.change_ticket_status(event.ctx, f"{event.ctx.channel.id}", f"closed by {event.ctx.user.id}")
             return
 
         if event.ctx.custom_id == "ticket_delete":
+            await DB_commands.delete_ticket(event.ctx, f"{event.ctx.channel.id}")
             await event.ctx.channel.delete()
-            logging.info(f"Ticket {event.ctx.channel.name} supprimé par {event.ctx.user.username}")
             return
-
 
         # if event.ctx.custom_id == "ticket_reopen":
         #     await event.ctx.channel.set_permission(event.ctx.channel.topic[], view_channel=True)

@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 import logging
 from const import DB_URL
-from utils.db import Server, Sanctions, DB_Roles, DB_User
+from utils.db import Server, Sanctions, DB_Roles, DB_User, Ticket
 import datetime
 
 class DB_commands(Extension) :
@@ -234,6 +234,50 @@ class DB_commands(Extension) :
             )
         await serv.save()
         logging.info(f"Serveur {event.after.name} mis à jour dans la base de donnée !")
+
+    async def create_ticket(ctx : InteractionContext, ticket):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        serv.tickets.append(
+            Ticket(
+                ticket_id = f"{ticket.id}",
+                ticket_user = f"{ctx.author.username} | {ctx.author.id}",
+                ticket_status = "open",
+                allowed_users = [f"{ctx.author.id}"]
+            )
+        )
+        await serv.save()
+        logging.info(f"Ticket {ticket.name} ajouté à la base de donnée !")
+
+    async def change_ticket_status(ctx : InteractionContext, ticket_id : str, status : str):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        for ticket in serv.tickets :
+            if ticket.ticket_id == ticket_id :
+                ticket.ticket_status = status
+        await serv.save()
+        logging.info(f"Ticket {ticket_id} mis à jour dans la base de donnée !")
+
+    async def delete_ticket(ctx : InteractionContext, ticket_id : str):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        for ticket in serv.tickets :
+            if ticket.ticket_id == ticket_id :
+                serv.tickets.remove(ticket)
+        await serv.save()
+        logging.info(f"Ticket {ticket_id} supprimé de la base de donnée !")
+
+    async def check_ticket(ctx : InteractionContext, user_id : str):
+        client = AsyncIOMotorClient(f"{DB_URL}")
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+        for ticket in serv.tickets :
+            if user_id in ticket.ticket_user and ticket.ticket_status == "open":
+                return True
+        return False
 
 def setup(bot):
     DB_commands(bot)

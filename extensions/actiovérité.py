@@ -13,7 +13,7 @@ actions = [
     "Inventez un slogan hilarant pour une marque fictive dans le chat.",
     "Partagez une astuce ou un conseil étrange mais utile dans le chat.",
     "Faites semblant d'être un animateur de télévision et présentez une émission fictive dans le chat.",
-     "Faites une danse improvisée dans votre chambre et partagez une vidéo dans le chat.",
+    "Faites une danse improvisée dans votre chambre et partagez une vidéo dans le chat.",
     "Chantez une chanson populaire en utilisant un accent étranger et enregistrez un message audio dans le chat.",
     "Imitez une personne célèbre de votre choix en écrivant une courte conversation dans le chat.",
     "Faites un compliment sincère à chaque personne du groupe dans le chat.",

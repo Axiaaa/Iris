@@ -30,6 +30,13 @@ class DB_Roles(BaseModel):
     role_perms : list[str] = []
 
 
+class Ticket(BaseModel):
+    ticket_id : str
+    ticket_user : str
+    ticket_status : str
+    allowed_users : list[str] = []
+
+
 class Server(Document):
     srv_id : str
     name : str
@@ -39,4 +46,5 @@ class Server(Document):
     member_count : int
     role : list[DB_Roles] = []
     user : list[DB_User] = []
+    tickets : list[Ticket] = []
 
