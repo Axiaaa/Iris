@@ -32,9 +32,9 @@ class Listen(Extension) :
     async def on_guild_update(self, event: events.GuildUpdate):
         await DB_commands.update_serv_info(event)
 
-    #@listen(event_name=events.Error)
-    #async def on_error(self, event : events.Error):
-    #    await self.bot.get_channel(1182411280015949954).send(f"Hey <@240430740158939139>, une erreur est survenue : {event.source} -> {event.error}")
+    @listen(event_name=events.Error)
+    async def on_error(self, event : events.Error):
+        await self.bot.get_channel(1182411280015949954).send(f"Hey <@240430740158939139>, une erreur est survenue : {event.source} -> {event.error}")
 
 def setup(bot):
     Listen(bot)

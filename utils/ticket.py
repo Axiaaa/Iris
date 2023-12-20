@@ -1,7 +1,7 @@
 from interactions import Client, Extension, OptionType, slash_command, slash_option, InteractionContext, listen
 from interactions import ChannelType, PermissionOverwrite, Permissions, ButtonStyle, Button, ActionRow, Embed, Timestamp
 import logging
-from utils.db_cmds import DB_commands  # Assurez-vous que ce module est correctement implémenté
+from utils.db_cmds import DB_commands
 
 class Tickets(Extension): 
     def __init__(self, client: Client):
@@ -27,11 +27,11 @@ class Tickets(Extension):
         guild = ctx.guild
         ticket_channel = await ctx.guild.create_channel(
             name=f"ticket-{ctx.author.username}",
-            category=ctx.guild.get_channel(1186809443086766111),  # ID de la catégorie pour les tickets
+            category=ctx.guild.get_channel(1185674072856731749),  # ID de la catégorie pour les tickets
             topic=f"Ticket de {ctx.author.username} pour {raison} | {ctx.author.id}",
             channel_type=ChannelType.GUILD_TEXT
         )
-        await ticket_channel.set_permission(ctx.guild.get_role(1109476455731179522), view_channel=False)  # ID du rôle @everyone
+        await ticket_channel.set_permission(ctx.guild.get_role(1179840761781567508), view_channel=False)  # ID du rôle @everyone
         await ticket_channel.set_permission(ctx.author, view_channel=True)
 
         embed = Embed(
@@ -57,45 +57,76 @@ class Tickets(Extension):
         await DB_commands.create_ticket(ctx, ticket_channel)
         logging.info(f"Ticket {ticket_channel.name} créé par {ctx.author.username}")
 
-    @listen()
-    async def on_button_click(self, event: InteractionContext):
-        if event.custom_id == "ticket_close":
-            channel = event.channel
-            await channel.set_permissions(event.user, read_messages=False)
+    @listen(event_name="on_component")
+    async def bouttons_tickets(self, event): 
+        if event.ctx.custom_id == "ticket_close":
+            # Définir les permissions pour masquer le canal à l'utilisateur
+            await event.ctx.channel.set_permission(event.ctx.user, view_channel=False)
+            await event.ctx.channel.send(embed=Embed(
+                title="Ticket fermé :lock:",
+                description=f"Le ticket a été fermé par {event.ctx.user.mention}",
+                color="#2596be",
+                timestamp=Timestamp.now()
+            ))
+
             buttons = [
                 ActionRow(
                     Button(
-                        style=ButtonStyle.GREEN,
+                        style=ButtonStyle.GREEN, 
                         custom_id="ticket_reopen",
                         label="Rouvrir le ticket"
                     ),
                     Button(
-                        style=ButtonStyle.DANGER,
+                        style=ButtonStyle.DANGER, 
                         custom_id="ticket_delete",
                         label="Supprimer le ticket"
                     ),
                     Button(
-                        style=ButtonStyle.BLUE,
+                        style=ButtonStyle.BLUE, 
                         custom_id="ticket_transcript",
-                        label="Transcrire le ticket"
+                        label="Faire un transcript du ticket"
                     )
                 )
             ]
-            await event.channel.send("Le ticket a été fermé.", components=buttons)
-            await DB_commands.change_ticket_status(event.ctx, f"{event.channel.id}", "closed")
 
-        elif event.custom_id == "ticket_delete":
-            await DB_commands.delete_ticket(event.ctx, f"{event.channel.id}")
-            await event.channel.delete()
+            await event.ctx.channel.send("Le ticket a été fermé.", components=buttons)
+            await DB_commands.change_ticket_status(event.ctx, f"{event.ctx.channel.id}", "closed")
+
+        elif event.ctx.custom_id == "ticket_delete":
+            await DB_commands.delete_ticket(event.ctx, f"{event.ctx.channel.id}")
+            await event.ctx.channel.delete()
 
         elif event.custom_id == "ticket_reopen":
-            # Ajoutez ici la logique pour rouvrir le ticket
-            await DB_commands.change_ticket_status(event.ctx, f"{event.channel.id}", "reopened")
-            await event.channel.send("Le ticket a été rouvert.")
+            # Ajoute ici la logique pour rouvrir le ticket
+            await DB_commands.change_ticket_status(event.ctx, f"{event.ctx.channel.id}", "reopened")
+            await event.ctx.channel.send("Le ticket a été rouvert.")
 
         elif event.custom_id == "ticket_transcript":
-            # Ajoutez ici la logique pour transcrire le ticket
-            await event.channel.send("La transcription du ticket est en cours...")
+            # Ajoute ici la logique pour transcrire le ticket
+            await event.ctx.channel.send("La transcription du ticket est en cours...")
+
+
+
+                    # if event.ctx.custom_id == "ticket_reopen":
+        #     await event.ctx.channel.set_permission(event.ctx.channel.topic[], view_channel=True)
+        #     await event.ctx.channel.send(embed=Embed(
+        #         title="Ticket réouvert :unlock:",
+        #         description=f"Le ticket a été réouvert par {event.ctx.user.mention}",
+        #         color="#2596be",
+        #         timestamp=Timestamp.now()
+        #         )
+        #     )
+        #     buttons : list[ActionRow] = [
+        #         ActionRow(
+        #             Button(
+        #                 style=ButtonStyle.DANGER, 
+        #                 custom_id="ticket_close",
+        #                 emoji=":closed_lock_with_key:",
+        #                 label="Fermer le ticket"
+        #             ))]
+        #     await event.ctx.message.edit(components=buttons)
+        #     return
+
 
 def setup(bot):
     Tickets(bot)

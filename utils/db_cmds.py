@@ -1,283 +1,105 @@
-from interactions import *
-from beanie import *
-from interactions import *
+from interactions import Extension, InteractionContext, Member, events
 from motor.motor_asyncio import AsyncIOMotorClient
+from utils.db import Server, Sanctions, Ticket
+from beanie import PydanticObjectId
 from beanie import init_beanie
-import logging
 from const import DB_URL
-from utils.db import Server, Sanctions, DB_Roles, DB_User, Ticket
+import logging
 import datetime
 
-class DB_commands(Extension) :
+class DB_commands(Extension):
+    def __init__(self, client):
+        self.client = client
 
-    async def DB_add_ban(ctx : InteractionContext, reason : str, target_user : Member):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        serv.sanctions.append(
-            Sanctions(
-                id = PydanticObjectId(),
-                user_id = f"{target_user.id}",
-                user_name = f"{target_user.global_name}",
-                reason = f"{reason}",
-                mod_id = f"{ctx.author.id}",
-                mod_name = f"{ctx.author.global_name}",
-                s_type = "ban",
-                date = f"{datetime.datetime.utcnow()}"
+    async def add_sanction(self, ctx: InteractionContext, sanction_type: str, reason: str, target_user: Member):
+        serv = await Server.find_one(Server.srv_id == str(ctx.guild.id))
+        if serv:
+            serv.sanctions.append(
+                Sanctions(
+                    id=PydanticObjectId(),
+                    user_id=str(target_user.id),
+                    user_name=target_user.username,
+                    reason=reason,
+                    mod_id=str(ctx.author.id),
+                    mod_name=ctx.author.username,
+                    s_type=sanction_type,
+                    date=datetime.datetime.utcnow()
+                )
             )
-        )
-        await serv.save()
-        logging.info(f"{target_user.global_name} a été banni du serveur {ctx.guild.name} !")
+            await serv.save()
+            logging.info(f"{target_user.username} a reçu une sanction de type {sanction_type} dans le serveur {ctx.guild.name}.")
 
-    
-    async def DB_add_kick(ctx : InteractionContext, reason : str, target_user : Member):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        serv.sanctions.append(
-            Sanctions(
-                id = PydanticObjectId(),
-                user_id = f"{target_user.id}",
-                user_name = f"{target_user.global_name}",
-                reason = f"{reason}",
-                mod_id = f"{ctx.author.id}",
-                mod_name = f"{ctx.author.global_name}",
-                s_type = "kick",
-                date = f"{datetime.datetime.utcnow()}"
+    async def get_warn_count(self, ctx: InteractionContext, user_id: str):
+        serv = await Server.find_one(Server.srv_id == str(ctx.guild.id))
+        if serv:
+            return sum(1 for sanction in serv.sanctions if sanction.user_id == user_id and sanction.s_type == "warn")
+        return 0
+    @staticmethod
+    async def create_ticket(ctx: InteractionContext, ticket_channel):
+        serv = await Server.find_one(Server.srv_id == str(ctx.guild.id))
+        if serv:
+            serv.tickets.append(
+                Ticket(
+                    ticket_id=str(ticket_channel.id),
+                    ticket_user=f"{ctx.author.username} | {ctx.author.id}",
+                    ticket_status="open",
+                    allowed_users=[str(ctx.author.id)]
+                )
             )
-        )
-        await serv.save()
-        logging.info(f"{target_user.global_name} a été kick du serveur {ctx.guild.name} !")
-
-    async def DB_add_mute(ctx : InteractionContext, duree : str, reason : str, target_user : Member):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        serv.sanctions.append(
-            Sanctions(
-                id = PydanticObjectId(),
-                user_id = f"{target_user.id}",
-                user_name = f"{target_user.global_name}",
-                reason = f"{reason}\nDurée : {duree}",
-                mod_id = f"{ctx.author.id}",
-                mod_name = f"{ctx.author.global_name}",
-                s_type = "mute",
-                date = f"{datetime.datetime.utcnow()}"
-            )
-        )
-        await serv.save()
-        logging.info(f"{target_user.global_name} a été mute du serveur {ctx.guild.name} !")
+            await serv.save()
+            logging.info(f"Ticket {ticket_channel.name} créé par {ctx.author.username} dans le serveur {ctx.guild.name}.")
 
     @staticmethod
-    async def get_warn_count(ctx: InteractionContext, user_id: str):
-        user_id_str = str(user_id)
+    async def change_ticket_status(ctx: InteractionContext, ticket_id: str, status: str):
+        serv = await Server.find_one(Server.srv_id == str(ctx.guild.id))
+        if serv:
+            for ticket in serv.tickets:
+                if ticket.ticket_id == ticket_id:
+                    ticket.ticket_status = status
+            await serv.save()
+            logging.info(f"Statut du ticket {ticket_id} changé en {status} dans le serveur {ctx.guild.name}.")
 
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
+    @staticmethod
+    async def delete_ticket(ctx: InteractionContext, ticket_id: str):
+        serv = await Server.find_one(Server.srv_id == str(ctx.guild.id))
+        if serv:
+            serv.tickets = [ticket for ticket in serv.tickets if ticket.ticket_id != ticket_id]
+            await serv.save()
+            logging.info(f"Ticket {ticket_id} supprimé du serveur {ctx.guild.name}.")
 
-        if serv is not None:
-            warn_count = sum(1 for sanction in serv.sanctions if sanction.user_id == user_id_str and sanction.s_type == "warn")
-            return warn_count
-        else:
-            return 0
-
-    async def DB_add_warn(ctx : InteractionContext, reason : str, target_user : Member):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        serv.sanctions.append(
-            Sanctions(
-                id = PydanticObjectId(),
-                user_id = f"{target_user.id}",
-                user_name = f"{target_user.global_name}",
-                reason = f"{reason}",
-                mod_id = f"{ctx.author.id}",
-                mod_name = f"{ctx.author.global_name}",
-                s_type = "warn",
-                date = f"{datetime.datetime.utcnow()}"
-            )
-        )
-        await serv.save()
-        logging.info(f"{target_user.global_name} a été warn du serveur {ctx.guild.name} !")
-
-        
-    async def DB_add_unban(ctx : InteractionContext, reason : str, target_user : Member):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        serv.sanctions.append(
-            Sanctions(
-                id = PydanticObjectId(),
-                user_id = f"{target_user.id}",
-                user_name = f"{target_user.global_name}",
-                reason = f"{reason}",
-                mod_id = f"{ctx.author.id}",
-                mod_name = f"{ctx.author.global_name}",
-                s_type = "unban",
-                date = f"{datetime.datetime.utcnow()}"
-            )
-        )
-        await serv.save()
-        logging.info(f"{target_user.global_name} a été débanni du serveur {ctx.guild.name} !")
-    
-    async def DB_add_unmute(ctx : InteractionContext, reason : str, target_user : Member):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        serv.sanctions.append(
-            Sanctions(
-                id = PydanticObjectId(),
-                user_id = f"{target_user.id}",
-                user_name = f"{target_user.global_name}",
-                reason = f"{reason}",
-                mod_id = f"{ctx.author.id}",
-                mod_name = f"{ctx.author.global_name}",
-                s_type = "unmute",
-                date = f"{datetime.datetime.utcnow()}"
-            )
-        )
-        await serv.save()
-        logging.info(f"{target_user.global_name} a été unmute du serveur {ctx.guild.name} !")
-    
-    async def DB_get_logs(ctx : InteractionContext, target_user : Member, embed : Embed):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        logs = serv.sanctions
-        logs.reverse()
-        for log in logs :
-            if log.user_id == f"{target_user.id}" :
-                embed.add_field(
-                    name=f"{log.s_type.upper()}",
-                    value=f"Raison : {log.reason}\nModérateur : <@{log.mod_id}>\nDate : {log.date[:19]}\nID : ||{log.id}||",
-                    inline=False
-                )
-        return embed
-    
-    async def DB_del_sanction(ctx : InteractionContext, sanction_id : PydanticObjectId):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        logs = serv.sanctions
-        for log in logs :
-            if log.id == sanction_id :
-                serv.sanctions.remove(log)
-        await serv.save()
-        logging.info(f"Sanction {sanction_id} supprimée !")
-
-    async def get_serv_info(event: events.GuildJoin):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        srv_id = event.guild.id
-        serv = await Server.find_one(Server.srv_id == f"{srv_id}")
-        if serv is None:
-            serv = Server(
-                srv_id = f"{event.guild.id}",
-                name = event.guild.name,
-                owner_id = event.guild.get_owner().id,
-                owner_name = event.guild.get_owner().global_name,
-                member_count= event.guild.member_count
-            )
-            for role in event.guild.roles :
-                serv.role.append(
-                    DB_Roles(
-                        role_id = f"{role.id}",
-                        role_name = f"{role.name}",
-                        role_perms = str(role.permissions).split('|')
-                    )
-                )
-            for user in event.guild.members :
-                if not user.bot :
-                    serv.user.append(
-                        DB_User(
-                            user_id = f"{user.id}",
-                            user_name = f"{user.global_name}",
-                            user_perms = str(user.guild_permissions).split('|'),
-                            user_roles = [f"{role.name} {role.id}" for role in user.roles]
-                        )
-                )
-            
-            await serv.insert()
-            logging.info(f"Serveur {event.guild.name} ajouté à la base de donnée !")
-        else:
-            logging.info(f"Serveur {event.guild.name} déjà présent dans la base de donnée !")
-
-
-    async def update_serv_info(event : events.GuildUpdate):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{event.after.id}")
-        serv.name = event.after.name
-        serv.owner_id = event.after.get_owner().id
-        serv.owner_name = event.after.get_owner().global_name
-        serv.member_count = event.after.member_count
-        serv.role = []
-        serv.user = []
-        for role in event.after.roles :
-            serv.role.append(
-                DB_Roles(
-                    role_id = f"{role.id}",
-                    role_name = f"{role.name}",
-                    role_perms = str(role.permissions).split('|')
-                )
-            )
-        for user in event.after.members :
-            if not user.bot :
-                serv.user.append(
-                    DB_User(
-                        user_id = f"{user.id}",
-                        user_name = f"{user.global_name}",
-                        user_perms = str(user.guild_permissions).split('|'),
-                        user_roles = [f"{role.name} {role.id}" for role in user.roles]
-                    )
-            )
-        await serv.save()
-        logging.info(f"Serveur {event.after.name} mis à jour dans la base de donnée !")
-
-    async def create_ticket(ctx : InteractionContext, ticket):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        serv.tickets.append(
-            Ticket(
-                ticket_id = f"{ticket.id}",
-                ticket_user = f"{ctx.author.username} | {ctx.author.id}",
-                ticket_status = "open",
-                allowed_users = [f"{ctx.author.id}"]
-            )
-        )
-        await serv.save()
-        logging.info(f"Ticket {ticket.name} ajouté à la base de donnée !")
-
-    async def change_ticket_status(ctx : InteractionContext, ticket_id : str, status : str):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        for ticket in serv.tickets :
-            if ticket.ticket_id == ticket_id :
-                ticket.ticket_status = status
-        await serv.save()
-        logging.info(f"Ticket {ticket_id} mis à jour dans la base de donnée !")
-
-    async def delete_ticket(ctx : InteractionContext, ticket_id : str):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        for ticket in serv.tickets :
-            if ticket.ticket_id == ticket_id :
-                serv.tickets.remove(ticket)
-        await serv.save()
-        logging.info(f"Ticket {ticket_id} supprimé de la base de donnée !")
-
-    async def check_ticket(ctx : InteractionContext, user_id : str):
-        client = AsyncIOMotorClient(f"{DB_URL}")
-        await init_beanie(database=client.db_name, document_models=[Server])
-        serv = await Server.find_one(Server.srv_id == f"{ctx.guild.id}")
-        for ticket in serv.tickets :
-            if user_id in ticket.ticket_user and ticket.ticket_status == "open":
-                return True
+    @staticmethod
+    async def check_ticket(ctx: InteractionContext, user_id: str):
+        serv = await Server.find_one(Server.srv_id == str(ctx.guild.id))
+        if serv:
+            return any(ticket.ticket_user == user_id and ticket.ticket_status == "open" for ticket in serv.tickets)
         return False
+
+    @staticmethod
+    async def get_serv_info(event: events.GuildJoin):
+        client = AsyncIOMotorClient(DB_URL)
+        await init_beanie(database=client.db_name, document_models=[Server])
+        serv = await Server.find_one(Server.srv_id == str(event.guild.id))
+        if not serv:
+            new_serv = Server(
+                srv_id=str(event.guild.id),
+                name=event.guild.name,
+                owner_id=str(event.guild.owner_id),
+                member_count=event.guild.member_count,
+                sanctions=[],
+                tickets=[]
+            )
+            await new_serv.insert()
+            logging.info(f"Serveur {event.guild.name} ajouté à la base de données.")
+
+    @staticmethod
+    async def update_serv_info(event: events.GuildUpdate):
+        serv = await Server.find_one(Server.srv_id == str(event.after.id))
+        if serv:
+            serv.name = event.after.name
+            serv.owner_id = str(event.after.owner_id)
+            serv.member_count = event.after.member_count
+            await serv.save()
+            logging.info(f"Serveur {event.after.name} mis à jour dans la base de données.")
 
 def setup(bot):
     DB_commands(bot)
