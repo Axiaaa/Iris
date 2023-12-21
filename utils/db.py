@@ -3,7 +3,6 @@ from interactions import *
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
 from beanie import Document, init_beanie
-import logging
 
 
 class Sanctions(BaseModel):

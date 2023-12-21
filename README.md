@@ -40,9 +40,24 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
 ## Frameworks et Bibliothèques Utilisés
 
 - [discord-py-interactions](https://github.com/discord-py-interactions/discord-py-interactions) pour interagir avec l'API Discord.
+   ```
+   pip install -U discord-py-interactions
+   py -3 -m pip install discord-py-interactions --upgrade
+   ```
 - [MongoDB](https://www.mongodb.com/) pour la gestion de la base de données.
+
 - [Motor](https://motor.readthedocs.io/en/stable/) pour l'interface asynchrone avec MongoDB.
+   ```
+   pip install Motor
+   ```
 - [Beanie](https://roman-right.github.io/beanie/) pour l'ORM avec MongoDB.
+   ```
+   pip install Beanie
+   ```
+- [Decouple](https://github.com/HBNetwork/python-decouple/tree/master) pour les variables d'env.
+   ```
+   pip install python-decouple
+   ```
 
 ## Commandes Disponibles
 
@@ -89,6 +104,7 @@ Liability
 Warranty
 
 **Conditions**
+
 License and copyright notice
 State changes
 Disclose source

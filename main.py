@@ -1,6 +1,6 @@
 from interactions import *
 from const import TOKEN, DB_URL
-import logging, os, asyncio
+import logging, os
 from motor.motor_asyncio import AsyncIOMotorClient
 from beanie import init_beanie
 from utils.db import Server
@@ -25,10 +25,10 @@ load_extensions(bot, "extensions", "extensions.")
 load_extensions(bot, "utils", "utils.", exclude_files=["db.py"])
 load_extensions(bot, "moderation", "moderation.")
 
-async def init_db():
-    client = AsyncIOMotorClient(f"{DB_URL}")
+@bot.event
+async def on_ready():
+    client = AsyncIOMotorClient(DB_URL)
     await init_beanie(database=client.db_name, document_models=[Server])
     logging.info("Connexion à la base de données réussie !")
 
-asyncio.run(init_db())
 bot.start()
