@@ -1,6 +1,6 @@
 from interactions import Extension, InteractionContext, Member, events
 from motor.motor_asyncio import AsyncIOMotorClient
-from utils.db import Server, Sanctions, Ticket
+from utils.db import Server, Sanctions, Ticket, DB_User, DB_Roles
 from beanie import PydanticObjectId
 from beanie import init_beanie
 from const import DB_URL
@@ -83,11 +83,29 @@ class DB_commands(Extension):
             new_serv = Server(
                 srv_id=str(event.guild.id),
                 name=event.guild.name,
-                owner_id=str(event.guild.owner_id),
+                owner_id=str(event.guild.get_owner().id),
                 member_count=event.guild.member_count,
                 sanctions=[],
                 tickets=[]
             )
+            for role in event.guild.roles :
+                new_serv.role.append(
+                    DB_Roles(
+                        role_id = f"{role.id}",
+                        role_name = f"{role.name}",
+                        role_perms = str(role.permissions).split('|')
+                    )
+                )
+            for user in event.guild.members :
+                if not user.bot :
+                    new_serv.user.append(
+                        DB_User(
+                            user_id = f"{user.id}",
+                            user_name = f"{user.global_name}",
+                            user_perms = str(user.guild_permissions).split('|'),
+                            user_roles = [f"{role.name} {role.id}" for role in user.roles]
+                        )
+                )
             await new_serv.insert()
             logging.info(f"Serveur {event.guild.name} ajouté à la base de données.")
 
@@ -96,8 +114,26 @@ class DB_commands(Extension):
         serv = await Server.find_one(Server.srv_id == str(event.after.id))
         if serv:
             serv.name = event.after.name
-            serv.owner_id = str(event.after.owner_id)
+            serv.owner_id = str(event.after.get_owner().id)
             serv.member_count = event.after.member_count
+            for role in event.after.roles :
+                serv.role.append(
+                    DB_Roles(
+                        role_id = f"{role.id}",
+                        role_name = f"{role.name}",
+                        role_perms = str(role.permissions).split('|')
+                    )
+                )
+                for user in event.after.members :
+                    if not user.bot :
+                        serv.user.append(
+                            DB_User(
+                                user_id = f"{user.id}",
+                                user_name = f"{user.global_name}",
+                                user_perms = str(user.guild_permissions).split('|'),
+                                user_roles = [f"{role.name} {role.id}" for role in user.roles]
+                            )
+                    )
             await serv.save()
             logging.info(f"Serveur {event.after.name} mis à jour dans la base de données.")
 

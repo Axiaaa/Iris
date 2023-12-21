@@ -25,8 +25,8 @@ load_extensions(bot, "extensions", "extensions.")
 load_extensions(bot, "utils", "utils.", exclude_files=["db.py"])
 load_extensions(bot, "moderation", "moderation.")
 
-@bot.event
-async def on_ready():
+@listen("on_ready")
+async def init_db():
     client = AsyncIOMotorClient(DB_URL)
     await init_beanie(database=client.db_name, document_models=[Server])
     logging.info("Connexion à la base de données réussie !")

@@ -40,7 +40,6 @@ class Server(Document):
     srv_id : str
     name : str
     owner_id : int
-    owner_name : str
     sanctions : list[Sanctions] = []
     member_count : int
     role : list[DB_Roles] = []

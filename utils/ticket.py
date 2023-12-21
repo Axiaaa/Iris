@@ -62,13 +62,6 @@ class Tickets(Extension):
         if event.ctx.custom_id == "ticket_close":
             # Définir les permissions pour masquer le canal à l'utilisateur
             await event.ctx.channel.set_permission(event.ctx.user, view_channel=False)
-            await event.ctx.channel.send(embed=Embed(
-                title="Ticket fermé :lock:",
-                description=f"Le ticket a été fermé par {event.ctx.user.mention}",
-                color="#2596be",
-                timestamp=Timestamp.now()
-            ))
-
             buttons = [
                 ActionRow(
                     Button(
@@ -89,7 +82,13 @@ class Tickets(Extension):
                 )
             ]
 
-            await event.ctx.channel.send("Le ticket a été fermé.", components=buttons)
+            await event.ctx.channel.send(embed=Embed(
+                title="Ticket fermé :lock:",
+                description=f"Le ticket a été fermé par {event.ctx.user.mention}",
+                color="#2596be",
+                timestamp=Timestamp.now()
+            ), components=buttons)
+            await event.ctx.channel.send("Le ticket a été fermé.")
             await DB_commands.change_ticket_status(event.ctx, f"{event.ctx.channel.id}", "closed")
 
         elif event.ctx.custom_id == "ticket_delete":
